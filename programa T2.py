@@ -3,7 +3,6 @@ import re
 archivo=open("datosx.txt","r")
 mensaje=archivo.read()
 
-#se inician las list yvariables a utilizar
 lista = []
 lista2 = []
 lista3 =[]
@@ -11,46 +10,106 @@ m = 0
 m1=0
 var = ""
 
+#patron = re.compile('(([A-Za-z]+\w?|\d{1,7})[\+|\-|\*|\/]([A-Za-z]+\w?|\d{1,7}))')# expresion regular
+patron = re.compile('\w+\s\=\s\w+\s[+*-/]\s\w+\s[+*-/]\s\w')
+a=str(mensaje)
 
-#patron = re.compile('\w+\s\=\s\w+\s[+*-/]\s\w+\s[+*-/]\s\w')
-a=str(mensaje)#se guarda en a lo que hay en el txt
-
-#ciclo for para pasar cada elemento de a en lista
 for b in a:
 	lista.append(b)
 
-#ciclo for para verificar si encontro un [+-/*], si lo encuentra verifica que su sucesor y antecesor no esten vacios
-#para poder asignar a var el triplo, ingresarlo en lista2 y al final quita los elementos que tomo de lista
-for n in a:
+
+m1=0
+#este ciclo verifica si la expresion tiene parentesis para poder guardar el triplo en una lista
+for n in lista:
 	if n == "*" or n == "/" or n == "+" or n == "-":
-		if  lista[m1-2]!=" " and lista[m1+2]!=" ":
+		if lista[m1-4]=="(" and lista[m1+4]==")":
+			if lista[m1-2]!=" " and lista[m1+2]!=" ":
 				var = "t"+str(m),"= ",a[m1-2],n,a[m1+2]
 				m+=1
 				lista2.append(var)
-				lista.remove(a[m1-2])
-				lista.remove(n)
-				lista.remove(a[m1+2])
+				lista[m1-4]=" "
+				lista[m1-2]=" "
+				lista[m1]=" "
+				lista[m1+2]=" "
+				lista[m1+4]=" "
 	m1+=1
-	#print(m1,n)
 
-#en este ciclo verifica si los elementos que quedan cumplen las condiciones para relizar un ultimo triplo usando el triplo anterior
-#para luego remover tambien los elentos que tomo
 m1=0
-for c in lista:
-	if re.match('[+*-/]',c) and lista[m1+2]==" ":
-		var = "t"+str(m),"= ",lista[m1-2],c,"t"+str(m-1)
-		lista2.append(var)
-		lista.remove(lista[m1-2])
-		lista.remove(c)
-	elif re.match('[+*-/]',c) and lista[m1-2]==" ":
-		var = "t"+str(m),"= ",lista[m1+2],c,"t"+str(m-1)
-		lista2.append(var)
-		lista.remove(c)
-		lista.remove(lista[m1+1])
+n=None
+#este ciclo es para verificar si entre la expresion se encuentra (* o /) para ponerlos primero en la lista
+for n in a:
+	if n == "*" or n == "/":
+		if  lista[m1-2]!=" " and lista[m1+2]!=" ":
+			var = "t"+str(m),"= ",a[m1-2],n,a[m1+2]
+			m+=1
+			lista2.append(var)
+			lista[m1-2]=" "
+			lista[m1]=" "
+			lista[m1+2]=" "
 	m1+=1
 
-#imprime los elementos de lista2
+m1=0
+#este ciclo con una serie de condiciones solo verifica si queda alguna expresion de un termino y un signo aritmetico
+#para despues asignarle un temporal y formar el triplo (t0 + 3) con los signos (*/)
+for c in lista:
+	if re.match('[*/]',c) and lista[m1+2]==" " and lista[m1-2]!=" ":
+		var = "t"+str(m),"= ",lista[m1-2],c,"t"+str(m-1)
+		m+=1
+		lista2.append(var)
+		lista[m1-2]=" "
+		lista[m1]=" "
+	elif re.match('[*/]',c) and lista[m1-2]==" " and lista[m1+2]!=" ":
+		var = "t"+str(m),"= ","t"+str(m-1),c,lista[m1+2]
+		m+=1
+		lista2.append(var)
+		lista[m1]=" "
+		lista[m1+2]=" "
+	elif re.match('[*/]',c) and lista[m1-2]==" " and lista[m1+2]==" ":
+		var = "t"+str(m),"= ","t"+str(m-2),c,"t"+str(m-1)
+		m+=1
+		lista2.append(var)
+	m1+=1
+
+m1=0
+n=None
+#este ciclo es para verificar si entre la expresion se encuentra (- o +) para ponerlos en la lista
+for n in lista:
+	if n == "+" or n == "-":
+		if  lista[m1-2]!=" " and lista[m1+2]!=" ":
+			var = "t"+str(m),"= ",a[m1-2],n,a[m1+2]
+			m+=1
+			lista2.append(var)
+			lista[m1-2]=" "
+			lista[m1]=" "
+			lista[m1+2]=" "
+	m1+=1
+
+
+m1=0
+#este ciclo con una serie de condiciones solo verifica si queda alguna expresion de un termino y un signo aritmetico
+#para despues asignarle un temporal y formar el triplo (t0 + 3) pero con los signos (+-)
+for c in lista:
+	if re.match('[+-]',c) and lista[m1+2]==" " and lista[m1-2]!=" ":
+		var = "t"+str(m),"= ",lista[m1-2],c,"t"+str(m-1)
+		m+=1
+		lista2.append(var)
+		lista[m1-2]=" "
+		lista[m1]=" "
+	elif re.match('[+-]',c) and lista[m1-2]==" " and lista[m1+2]!=" ":
+		var = "t"+str(m),"= ","t"+str(m-1),c,lista[m1+2]
+		m+=1
+		lista2.append(var)
+		lista[m1]=" "
+		lista[m1+2]=" "
+	elif re.match('[+-]',c) and lista[m1-2]==" " and lista[m1+2]==" ":
+		var = "t"+str(m),"= ","t"+str(m-2),c,"t"+str(m-1)
+		m+=1
+		lista2.append(var)
+	m1+=1
+
+
 d=None
+#imprime la lista 2 donde se guardaron los triplos
 for d in lista2:
 	print(d)
 
