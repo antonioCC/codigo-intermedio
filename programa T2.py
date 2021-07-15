@@ -5,7 +5,7 @@ mensaje=archivo.read()
 
 lista = []
 lista2 = []
-lista3 =[]
+#lista3 =[]
 m = 0
 m1=0
 var = ""
@@ -35,6 +35,29 @@ for n in lista:
 	m1+=1
 
 m1=0
+#tocho
+#este ciclo con una serie de condiciones solo verifica si queda alguna expresion de un termino y un signo aritmetico
+#para despues asignarle un temporal y formar el triplo (t0 + 3) con los signos (*/)
+for c in lista:
+	if re.match('[-+*/]',c) and lista[m1+2]==" " and lista[m1-2]!=" " and lista[m1-4]=="(" and lista[m1+12]==")":
+		var = "t"+str(m),"= ",lista[m1-2],c,"t"+str(m-1)
+		m+=1
+		lista2.append(var)
+		lista[m1-4]=" "
+		lista[m1-2]=" "
+		lista[m1]=" "
+		lista[m1+12]=" "
+	elif re.match('[-+*/]',c) and lista[m1-2]==" " and lista[m1+2]!=" " and lista[m1-12]=="(" and lista[m1+4]==")":
+		var = "t"+str(m),"= ","t"+str(m-1),c,lista[m1+2]
+		m+=1
+		lista2.append(var)
+		lista[m1-12]=" "
+		lista[m1]=" "
+		lista[m1+2]=" "
+		lista[m1+4]=" "
+	m1+=1
+
+m1=0
 n=None
 #este ciclo es para verificar si entre la expresion se encuentra (* o /) para ponerlos primero en la lista
 for n in a:
@@ -47,6 +70,7 @@ for n in a:
 			lista[m1]=" "
 			lista[m1+2]=" "
 	m1+=1
+
 
 m1=0
 #este ciclo con una serie de condiciones solo verifica si queda alguna expresion de un termino y un signo aritmetico
